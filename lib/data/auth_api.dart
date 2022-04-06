@@ -74,21 +74,21 @@ class AuthApi {
     }
   }
 
-  Future<String> updateProfileUrl(String uid, String path) async {
+  Future<String> updateProfileUrl(String uid, int length, String path) async {
     // 1. upload file
     await _storage //
-        .ref('users/$uid/profile.png')
+        .ref('users/$uid/$length')
         .putFile(File(path));
     // 2.get url
     final String url = await _storage //
-        .ref('users/$uid/profile.png')
+        .ref('users/$uid/$length')
         .getDownloadURL();
 
     // 3. update user profile
     _firestore //
         .doc('users/$uid')
-        .update(<String, dynamic>{'photoUrl': url});
-
+        .update({'photoList.$length': url});
+    print(url);
     return url;
   }
 

@@ -31,7 +31,13 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: GestureDetector(onTap: () => getImage(),child: const Icon(Icons.add,color: Colors.redAccent,),),),
+      body: Center(child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          GestureDetector(onTap: () => getImage(),child: const Icon(Icons.add,color: Colors.redAccent,),),
+          GestureDetector(onTap: () => StoreProvider.of<AppState>(context).dispatch(const SignOut()),child: const Icon(Icons.logout,color: Colors.redAccent,),),
+        ],
+      ),),
     );
   }
 }

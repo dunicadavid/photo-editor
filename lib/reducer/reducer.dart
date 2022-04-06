@@ -15,7 +15,9 @@ Reducer<AppState> reducer = combineReducers(<Reducer<AppState>>[
   TypedReducer<AppState, SignOutSuccessful>(_signOutSuccessful),
 
   TypedReducer<AppState, AddImage>(_addImage),
-
+  TypedReducer<AppState, AddToList>(_addToList),
+  TypedReducer<AppState, EmptyList>(_emptyList),
+  TypedReducer<AppState, UpdateListSuccessful>(_updateListSuccessful),
 ]);
 
 AppState _registerSuccessful(AppState state, RegisterSuccessful action) {
@@ -43,5 +45,23 @@ AppState _signOutSuccessful(AppState state, SignOutSuccessful action) {
 AppState _addImage(AppState state, AddImage action) {
   return state.rebuild((AppStateBuilder b) {
     b.image = action.image;
+  });
+}
+
+AppState _addToList(AppState state, AddToList action) {
+  return state.rebuild((AppStateBuilder b) {
+    b.user.photosList.add(action.image);
+  });
+}
+
+AppState _emptyList(AppState state, EmptyList action) {
+  return state.rebuild((AppStateBuilder b) {
+    b.user.photosList.clear();
+  });
+}
+
+AppState _updateListSuccessful(AppState state, UpdateListSuccessful action) {
+  return state.rebuild((AppStateBuilder b) {
+    b.user.photosList.add(action.url);
   });
 }

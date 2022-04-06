@@ -5,6 +5,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:image_editor/image_editor.dart';
+import 'package:photo_editor/actions/index.dart';
 import 'package:photo_editor/models/index.dart';
 
 class EditImagePage extends StatefulWidget {
@@ -58,7 +59,7 @@ class _EditImagePageState extends State<EditImagePage> {
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
           title: const Text(
-            "Edit Image",
+            'Edit Image',
             style: TextStyle(color: Colors.white),
           ),
           actions: <Widget>[
@@ -75,7 +76,7 @@ class _EditImagePageState extends State<EditImagePage> {
             IconButton(
               icon: const Icon(Icons.check),
               onPressed: () async {
-                await crop(false, image);
+                await crop(image);
               },
             ),
           ]),
@@ -196,46 +197,48 @@ class _EditImagePageState extends State<EditImagePage> {
     );
   }
 
-  Future<void> crop(bool test, File image) async {
-    final ExtendedImageEditorState state = editorKey.currentState!;
-    final Rect rect = state.getCropRect()!;
-    final EditActionDetails action = state.editAction!;
-    final double radian = action.rotateAngle;
+  Future<void> crop(File image,[bool test = true]) async {
+    // final ExtendedImageEditorState state = editorKey.currentState!;
+    // final Rect? rect = state.getCropRect();
+    // final EditActionDetails action = state.editAction!;
+    // final double radian = action.rotateAngle;
+    //
+    // final bool flipHorizontal = action.flipY;
+    // final bool flipVertical = action.flipX;
+    // final Uint8List img = state.rawImageData;
+    //
+    // final ImageEditorOption option = ImageEditorOption();
+    //
+    // option.addOption(ClipOption.fromRect(rect!));
+    // option.addOption(FlipOption(horizontal: flipHorizontal, vertical: flipVertical));
+    // if (action.hasRotateAngle) {
+    //   option.addOption(RotateOption(radian.toInt()));
+    // }
+    //
+    // option.addOption(ColorOption.saturation(sat));
+    // option.addOption(ColorOption.brightness(bright + 1));
+    // option.addOption(ColorOption.contrast(con));
+    //
+    // option.outputFormat = const OutputFormat.jpeg(100);
 
-    final bool flipHorizontal = action.flipY;
-    final bool flipVertical = action.flipX;
-    final Uint8List img = state.rawImageData;
-
-    final ImageEditorOption option = ImageEditorOption();
-
-    option.addOption(ClipOption.fromRect(rect));
-    option.addOption(FlipOption(horizontal: flipHorizontal, vertical: flipVertical));
-    if (action.hasRotateAngle) {
-      option.addOption(RotateOption(radian.toInt()));
-    }
-
-    option.addOption(ColorOption.saturation(sat));
-    option.addOption(ColorOption.brightness(bright + 1));
-    option.addOption(ColorOption.contrast(con));
-
-    option.outputFormat = const OutputFormat.jpeg(100);
-
-    print(const JsonEncoder.withIndent('  ').convert(option.toJson()));
-
-    final DateTime start = DateTime.now();
-    final Uint8List? result = await ImageEditor.editImage(
-      image: img,
-      imageEditorOption: option,
+    // print(const JsonEncoder.withIndent('  ').convert(option.toJson()));
+    //
+    // final DateTime start = DateTime.now();
+    // final Uint8List? result = await ImageEditor.editImage(
+    //   image: img,
+    //   imageEditorOption: option,
+    // );
+    //
+    // print('result.length = ${result!.length}');
+    //
+    // final Duration diff = DateTime.now().difference(start);
+    // image.writeAsBytesSync(result);
+    // print('image_editor time : $diff');
+    print(StoreProvider.of<AppState>(context).state.user!.photosList?.toList());
+    Future<void>.delayed(const Duration(seconds: 0)).then<dynamic>(
+      (_) => StoreProvider.of<AppState>(context).dispatch(UpdateList(StoreProvider.of<AppState>(context).state.user!.uid, StoreProvider.of<AppState>(context).state.user!.photosList?.toList() == null ? 0 : StoreProvider.of<AppState>(context).state.user!.photosList!.length,image.path,(_){}))
     );
-
-    print('result.length = ${result!.length}');
-
-    final Duration diff = DateTime.now().difference(start);
-    image.writeAsBytesSync(result);
-    print('image_editor time : $diff');
-    Future<void>.delayed(Duration(seconds: 0)).then(
-      (_) => Navigator.pushReplacementNamed(context, '/main'),
-    );
+    print("ok");
   }
 
   void flip() {
@@ -261,7 +264,7 @@ class _EditImagePageState extends State<EditImagePage> {
               color: Theme.of(context).accentColor,
             ),
             Text(
-              "Saturation",
+              'Saturation',
               style: TextStyle(color: Theme.of(context).accentColor),
             )
           ],
@@ -304,7 +307,7 @@ class _EditImagePageState extends State<EditImagePage> {
               color: Theme.of(context).accentColor,
             ),
             Text(
-              "Brightness",
+              'Brightness',
               style: TextStyle(color: Theme.of(context).accentColor),
             )
           ],
@@ -312,7 +315,7 @@ class _EditImagePageState extends State<EditImagePage> {
         Container(
           width: MediaQuery.of(context).size.width * 0.6,
           child: Slider(
-            label: '${bright.toStringAsFixed(2)}',
+            label: bright.toStringAsFixed(2),
             onChanged: (double value) {
               setState(() {
                 bright = value;
@@ -347,7 +350,7 @@ class _EditImagePageState extends State<EditImagePage> {
               color: Theme.of(context).accentColor,
             ),
             Text(
-              "Contrast",
+              'Contrast',
               style: TextStyle(color: Theme.of(context).accentColor),
             )
           ],

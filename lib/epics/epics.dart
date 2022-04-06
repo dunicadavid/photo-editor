@@ -18,6 +18,8 @@ class AppEpics {
       TypedEpic<AppState, RegisterStart>(_register),
       TypedEpic<AppState, LoginStart>(_login),
       TypedEpic<AppState, SignOutStart>(_signOut),
+
+      TypedEpic<AppState, UpdateListStart>(_updateList),
     ]);
   }
 
@@ -51,4 +53,11 @@ class AppEpics {
         .onErrorReturnWith((Object error, StackTrace stackTrace) => SignOut.error(error, stackTrace));
   }
 
+  Stream<AppAction> _updateList(Stream<UpdateListStart> actions, EpicStore<AppState> store) {
+    return actions.flatMap((UpdateListStart action) => Stream<void>.value(null)
+        .asyncMap((_) => _authApi.updateProfileUrl(action.uid, action.length, action.path))
+        .map((String url) => UpdateList.successful(url))
+        .onErrorReturnWith((Object error, StackTrace stackTrace) => UpdateList.error(error, stackTrace))
+        .doOnData(action.result));
+  }
 }

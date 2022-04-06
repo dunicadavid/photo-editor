@@ -104,6 +104,14 @@ class _$AppUserSerializer implements StructuredSerializer<AppUser> {
         ..add(serializers.serialize(value,
             specifiedType: const FullType(String)));
     }
+    value = object.photosList;
+    if (value != null) {
+      result
+        ..add('photosList')
+        ..add(serializers.serialize(value,
+            specifiedType:
+                const FullType(BuiltList, const [const FullType(String)])));
+    }
     return result;
   }
 
@@ -137,6 +145,12 @@ class _$AppUserSerializer implements StructuredSerializer<AppUser> {
         case 'photoUrl':
           result.photoUrl = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String?;
+          break;
+        case 'photosList':
+          result.photosList.replace(serializers.deserialize(value,
+                  specifiedType: const FullType(
+                      BuiltList, const [const FullType(String)]))!
+              as BuiltList<Object?>);
           break;
       }
     }
@@ -261,6 +275,8 @@ class _$AppUser extends AppUser {
   final String phoneNumber;
   @override
   final String? photoUrl;
+  @override
+  final BuiltList<String>? photosList;
 
   factory _$AppUser([void Function(AppUserBuilder)? updates]) =>
       (new AppUserBuilder()..update(updates)).build();
@@ -270,7 +286,8 @@ class _$AppUser extends AppUser {
       required this.fullName,
       required this.email,
       required this.phoneNumber,
-      this.photoUrl})
+      this.photoUrl,
+      this.photosList})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(uid, 'AppUser', 'uid');
     BuiltValueNullFieldError.checkNotNull(fullName, 'AppUser', 'fullName');
@@ -294,15 +311,20 @@ class _$AppUser extends AppUser {
         fullName == other.fullName &&
         email == other.email &&
         phoneNumber == other.phoneNumber &&
-        photoUrl == other.photoUrl;
+        photoUrl == other.photoUrl &&
+        photosList == other.photosList;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc($jc(0, uid.hashCode), fullName.hashCode), email.hashCode),
-            phoneNumber.hashCode),
-        photoUrl.hashCode));
+        $jc(
+            $jc(
+                $jc($jc($jc(0, uid.hashCode), fullName.hashCode),
+                    email.hashCode),
+                phoneNumber.hashCode),
+            photoUrl.hashCode),
+        photosList.hashCode));
   }
 
   @override
@@ -312,7 +334,8 @@ class _$AppUser extends AppUser {
           ..add('fullName', fullName)
           ..add('email', email)
           ..add('phoneNumber', phoneNumber)
-          ..add('photoUrl', photoUrl))
+          ..add('photoUrl', photoUrl)
+          ..add('photosList', photosList))
         .toString();
   }
 }
@@ -340,6 +363,12 @@ class AppUserBuilder implements Builder<AppUser, AppUserBuilder> {
   String? get photoUrl => _$this._photoUrl;
   set photoUrl(String? photoUrl) => _$this._photoUrl = photoUrl;
 
+  ListBuilder<String>? _photosList;
+  ListBuilder<String> get photosList =>
+      _$this._photosList ??= new ListBuilder<String>();
+  set photosList(ListBuilder<String>? photosList) =>
+      _$this._photosList = photosList;
+
   AppUserBuilder();
 
   AppUserBuilder get _$this {
@@ -350,6 +379,7 @@ class AppUserBuilder implements Builder<AppUser, AppUserBuilder> {
       _email = $v.email;
       _phoneNumber = $v.phoneNumber;
       _photoUrl = $v.photoUrl;
+      _photosList = $v.photosList?.toBuilder();
       _$v = null;
     }
     return this;
@@ -368,16 +398,30 @@ class AppUserBuilder implements Builder<AppUser, AppUserBuilder> {
 
   @override
   _$AppUser build() {
-    final _$result = _$v ??
-        new _$AppUser._(
-            uid: BuiltValueNullFieldError.checkNotNull(uid, 'AppUser', 'uid'),
-            fullName: BuiltValueNullFieldError.checkNotNull(
-                fullName, 'AppUser', 'fullName'),
-            email: BuiltValueNullFieldError.checkNotNull(
-                email, 'AppUser', 'email'),
-            phoneNumber: BuiltValueNullFieldError.checkNotNull(
-                phoneNumber, 'AppUser', 'phoneNumber'),
-            photoUrl: photoUrl);
+    _$AppUser _$result;
+    try {
+      _$result = _$v ??
+          new _$AppUser._(
+              uid: BuiltValueNullFieldError.checkNotNull(uid, 'AppUser', 'uid'),
+              fullName: BuiltValueNullFieldError.checkNotNull(
+                  fullName, 'AppUser', 'fullName'),
+              email: BuiltValueNullFieldError.checkNotNull(
+                  email, 'AppUser', 'email'),
+              phoneNumber: BuiltValueNullFieldError.checkNotNull(
+                  phoneNumber, 'AppUser', 'phoneNumber'),
+              photoUrl: photoUrl,
+              photosList: _photosList?.build());
+    } catch (_) {
+      late String _$failedField;
+      try {
+        _$failedField = 'photosList';
+        _photosList?.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'AppUser', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }

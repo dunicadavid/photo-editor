@@ -3,6 +3,12 @@ part of models;
 abstract class AppUser implements Built<AppUser, AppUserBuilder> {
   factory AppUser([void Function(AppUserBuilder b) updates]) = _$AppUser;
 
+  factory AppUser.initialState() {
+    return _$AppUser((AppUserBuilder b) {
+      b.photosList = <String>[] as ListBuilder<String>?;
+    });
+  }
+
   factory AppUser.fromJson(dynamic json) => serializers.deserializeWith(serializer, json)!;
 
   AppUser._();
@@ -16,6 +22,8 @@ abstract class AppUser implements Built<AppUser, AppUserBuilder> {
   String get phoneNumber;
 
   String? get photoUrl;
+
+  BuiltList<String>? get photosList;
 
   Map<String, dynamic> get json => serializers.serializeWith(serializer, this)! as Map<String, dynamic>;
 
